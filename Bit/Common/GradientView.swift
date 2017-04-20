@@ -9,15 +9,18 @@
 import UIKit
 import QuartzCore
 
+let gradientStartColor = UIColor(red: 255.0/255.0, green: 200.0/255.0, blue: 110.0/255.0, alpha: 1.0)
+let gradientEndColor = UIColor(red: 239.0/255.0, green: 123.0/255.0, blue: 123.0/255.0, alpha: 1.0)
+
 @IBDesignable class GradientView: UIView {
     
-    @IBInspectable var startColor: UIColor = .white {
+    @IBInspectable var startColor: UIColor = gradientStartColor {
         didSet{
             setupView()
         }
     }
     
-    @IBInspectable var endColor: UIColor = .black {
+    @IBInspectable var endColor: UIColor = gradientEndColor {
         didSet{
             setupView()
         }

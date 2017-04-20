@@ -21,6 +21,10 @@
 		5A5CDBA11EA8BE1D0046F31A /* Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5CDBA01EA8BE1D0046F31A /* Validate.swift */; };
 		5A5CDBA51EA8C83A0046F31A /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5CDBA41EA8C83A0046F31A /* FormViewController.swift */; };
 		5A5CDBA71EA8D37C0046F31A /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5CDBA61EA8D37C0046F31A /* KeyboardLayoutConstraint.swift */; };
+		5AA4391C1EA8F3E8007D5939 /* UINavigationBar+Height.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA4391B1EA8F3E8007D5939 /* UINavigationBar+Height.swift */; };
+		5AA4391E1EA9298E007D5939 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA4391D1EA9298E007D5939 /* SplashViewController.swift */; };
+		5AA439201EA9362F007D5939 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA4391F1EA9362F007D5939 /* ProfileViewController.swift */; };
+		5AA439261EA938F6007D5939 /* UINavigationBar+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA439251EA938F6007D5939 /* UINavigationBar+Gradient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +44,10 @@
 		5A5CDBA01EA8BE1D0046F31A /* Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validate.swift; sourceTree = "<group>"; };
 		5A5CDBA41EA8C83A0046F31A /* FormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		5A5CDBA61EA8D37C0046F31A /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
+		5AA4391B1EA8F3E8007D5939 /* UINavigationBar+Height.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Height.swift"; sourceTree = "<group>"; };
+		5AA4391D1EA9298E007D5939 /* SplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		5AA4391F1EA9362F007D5939 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		5AA439251EA938F6007D5939 /* UINavigationBar+Gradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Gradient.swift"; sourceTree = "<group>"; };
 		6AE5C62B7B38A10A7024CFAE /* Pods-Bit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bit/Pods-Bit.debug.xcconfig"; sourceTree = "<group>"; };
 		F8FD678B0D5872BFC57A7DED /* Pods-Bit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bit/Pods-Bit.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -95,11 +103,13 @@
 			isa = PBXGroup;
 			children = (
 				5A5CDB831EA8A5350046F31A /* AppDelegate.swift */,
+				5AA4391D1EA9298E007D5939 /* SplashViewController.swift */,
 				5A5CDBA41EA8C83A0046F31A /* FormViewController.swift */,
 				5A5CDB851EA8A5350046F31A /* WelcomeViewController.swift */,
 				5A5CDB981EA8B8D90046F31A /* SignUpViewController.swift */,
 				5A5CDB9A1EA8B8E60046F31A /* ForgotPasswordViewController.swift */,
 				5A5CDB9C1EA8B8FD0046F31A /* FriendsViewController.swift */,
+				5AA4391F1EA9362F007D5939 /* ProfileViewController.swift */,
 				5A5CDB871EA8A5350046F31A /* Main.storyboard */,
 				5A5CDB8A1EA8A5350046F31A /* Assets.xcassets */,
 				5A5CDB8C1EA8A5350046F31A /* LaunchScreen.storyboard */,
@@ -116,6 +126,8 @@
 				5A5CDBA61EA8D37C0046F31A /* KeyboardLayoutConstraint.swift */,
 				5A5CDBA01EA8BE1D0046F31A /* Validate.swift */,
 				5A5CDB961EA8AB840046F31A /* GradientView.swift */,
+				5AA4391B1EA8F3E8007D5939 /* UINavigationBar+Height.swift */,
+				5AA439251EA938F6007D5939 /* UINavigationBar+Gradient.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -251,9 +263,13 @@
 				5A5CDB841EA8A5350046F31A /* AppDelegate.swift in Sources */,
 				5A5CDB991EA8B8D90046F31A /* SignUpViewController.swift in Sources */,
 				5A5CDBA71EA8D37C0046F31A /* KeyboardLayoutConstraint.swift in Sources */,
+				5AA439201EA9362F007D5939 /* ProfileViewController.swift in Sources */,
+				5AA4391C1EA8F3E8007D5939 /* UINavigationBar+Height.swift in Sources */,
+				5AA439261EA938F6007D5939 /* UINavigationBar+Gradient.swift in Sources */,
 				5A5CDB9D1EA8B8FD0046F31A /* FriendsViewController.swift in Sources */,
 				5A5CDBA51EA8C83A0046F31A /* FormViewController.swift in Sources */,
 				5A5CDB971EA8AB840046F31A /* GradientView.swift in Sources */,
+				5AA4391E1EA9298E007D5939 /* SplashViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
