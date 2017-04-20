@@ -17,6 +17,8 @@ class WelcomeViewController: FormViewController {
     
     @IBAction func login() {
         
+        dismissKeyboard()
+        
         // validate email + password
         guard let email = emailTextField.text,
             let pass = passwordTextField.text,
@@ -24,8 +26,6 @@ class WelcomeViewController: FormViewController {
             Validate.defaultText(text: pass) else {
                 return
         }
-        
-        dismissKeyboard()
         
         // sign in
         FIRAuth.auth()?.signIn(withEmail: email, password: pass, completion: {(user,error)

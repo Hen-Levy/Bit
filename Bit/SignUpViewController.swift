@@ -30,8 +30,10 @@ class SignUpViewController: FormViewController {
         // validate email + password
         guard let email = emailTextField.text,
             let pass = passwordTextField.text,
+            let rePass = rePasswordTextField.text,
             Validate.email(email: email),
-            Validate.defaultText(text: pass) else {
+            Validate.defaultText(text: pass),
+            pass == rePass else {
                 return
         }
         
