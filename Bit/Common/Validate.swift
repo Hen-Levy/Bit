@@ -1,12 +1,13 @@
 //
 //  Validations.swift
-//  Hen Levy
+//  Hen
 //
 //  Created by Hen Levy on 29/12/2015.
 //  Copyright © 2015 Hen Levy. All rights reserved.
 //
 
 import Foundation
+import PhoneNumberKit
 
 let defaultMaxLength = 100
 let emailRegex = "[\\w._%+-]+@[\\w.-]+\\.\\w{2,}"
@@ -27,6 +28,27 @@ class Validate {
         var validator = Validate.sharedInstance
         validator.format = emailRegex
         return validator.validateString(email)
+    }
+    
+    // MARK: Validation
+    
+    class func phone(phone: String) -> String? {
+        let phoneNumberKit = PhoneNumberKit()
+        var parsedPhoneNumber: PhoneNumber?
+        
+        do {
+            parsedPhoneNumber = try phoneNumberKit.parse(phone, withRegion: "IL", ignoreType: true)
+        }
+        catch {
+            print("Phone number is invalid. Generic parser error")
+        }
+        
+        var formattedPhoneNumber: String?
+        if let validPhoneNumber = parsedPhoneNumber {
+            formattedPhoneNumber = phoneNumberKit.format(validPhoneNumber, toType: .e164)
+        }
+        
+        return formattedPhoneNumber
     }
 }
 

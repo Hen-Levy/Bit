@@ -8,17 +8,24 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
+import PhoneNumberKit
 
 class SignUpViewController: FormViewController {
-    @IBOutlet weak var firstNameTextField: UITextField!
-    @IBOutlet weak var lastNameTextField: UITextField!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var phoneTextField: PhoneNumberTextField!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var rePasswordTextField: UITextField!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        phoneTextField.defaultRegion = "IL"
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        firstNameTextField.becomeFirstResponder()
+        nameTextField.becomeFirstResponder()
     }
     
     // MARK: Actions
@@ -31,8 +38,11 @@ class SignUpViewController: FormViewController {
         guard let email = emailTextField.text,
             let pass = passwordTextField.text,
             let rePass = rePasswordTextField.text,
+            let phone = phoneTextField.text,
+            let validPhone = Validate.phone(phone: phone),
             Validate.email(email: email),
             Validate.defaultText(text: pass),
+            
             pass == rePass else {
                 return
         }
@@ -43,9 +53,18 @@ class SignUpViewController: FormViewController {
                 debugPrint(strongError.localizedDescription)
             } else if let strongSelf = self {
                 
+                let ref = FIRDatabase.database().reference()
+                
+                ref.child("users").child(user!.uid).setValue(
+                    ["name": strongSelf.nameTextField.text!,
+                     "phone": validPhone,
+                     "email": user!.email])
+                
+                ref.child("phones").child(validPhone).setValue(user!.uid)
+                
                 // update user display name
                 let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
-                changeRequest?.displayName = strongSelf.firstNameTextField.text
+                changeRequest?.displayName = strongSelf.nameTextField.text
                 changeRequest?.commitChanges() { (error) in
                     if let strongError = error {
                         debugPrint(strongError.localizedDescription)
@@ -64,9 +83,9 @@ class SignUpViewController: FormViewController {
     // MARK: UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == firstNameTextField {
-            lastNameTextField.becomeFirstResponder()
-        } else if textField == lastNameTextField {
+        if textField == nameTextField {
+            phoneTextField.becomeFirstResponder()
+        } else if textField == phoneTextField {
             emailTextField.becomeFirstResponder()
         } else if textField == emailTextField {
             passwordTextField.becomeFirstResponder()
