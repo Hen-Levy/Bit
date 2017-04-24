@@ -15,7 +15,6 @@ import FirebaseDatabase
 
 class ContactsViewController: PeopleViewController {
     @IBOutlet weak var contactsTableView: UITableView!
-    var isSearching = false
     var contacts: [CNContact] {
         return isSearching ? ContactsManager.shared.searchResultsContacts : ContactsManager.shared.contacts
     }
@@ -41,6 +40,7 @@ class ContactsViewController: PeopleViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         barCustomView?.backButton.isHidden = true
+        searchBarCancelButtonClicked(barCustomView!.friendsSearchBar)
     }
     
     func loadPhones() {
@@ -87,7 +87,7 @@ class ContactsViewController: PeopleViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let bitsViewController = segue.destination as! BitsViewController
-        bitsViewController.friendUid = sender as! String
+        bitsViewController.friend = sender as! Friend
     }
 }
 
@@ -165,16 +165,25 @@ extension ContactsViewController: UITableViewDataSource, UITableViewDelegate {
         if let friendUid = user.uid {
             
             let myUID = FIRAuth.auth()!.currentUser!.uid
-            
-            // contact is signed up - add him as friend
             var path = "users/" + myUID + "/friends"
-            dbRef.child(path).setValue([friendUid: true])
             
-            // your friend is adding you as a friend too
-            path = "users/" + friendUid + "/friends"
-            dbRef.child(path).setValue([myUID: true])
+            // if contact isn't a friend yet
+            dbRef.child(path).observeSingleEvent(of: .value, with: { [weak self] snapshot in
+
+                if !snapshot.hasChild(friendUid) {
+                    
+                    // contact is signed up - add him as friend
+                    path = "users/" + myUID + "/friends/" + friendUid
+                    self?.dbRef.child(path).setValue(["name": contact.fullName])
+                    
+                    // your friend is adding you as a friend too
+                    path = "users/" + friendUid + "/friends/" + myUID
+                    self?.dbRef.child(path).setValue(["name": FIRAuth.auth()!.currentUser!.displayName!])
+                }
+            })
             
-            performSegue(withIdentifier: "SegueToBits", sender: friendUid)
+            let friend = Friend(uid: friendUid, name: contact.fullName, image: contact.image)
+            performSegue(withIdentifier: "SegueToBits", sender: friend)
             
         } else if let contactPhone = user.phone {
             

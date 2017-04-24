@@ -48,6 +48,7 @@ class BarCustomView: UIView {
         friendsSearchBar.frame = CGRect()
         friendsSearchBar.backgroundImage = UIImage()
         friendsSearchBar.placeholder = "Search for people"
+        friendsSearchBar.tintColor = .white
         addSubview(friendsSearchBar)
         addSubview(addFriendButton)
         addSubview(backButton)

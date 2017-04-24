@@ -12,4 +12,5 @@ import FirebaseDatabase
 class PeopleViewController: UIViewController {
     var dbRef = FIRDatabase.database().reference()
     var barCustomView: BarCustomView?
+    var isSearching = false
 }
