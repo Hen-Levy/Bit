@@ -16,6 +16,6 @@ class Friend {
     init(uid: String, name: String, image: UIImage?) {
         self.uid = uid
         self.name = name
-        self.image = image ?? UIImage(named: "contact_placeholder")
+        self.image = image ?? personPlaceholderImage
     }
 }

@@ -142,7 +142,7 @@ extension CNContact {
         if let data = thumbnailImageData {
             return UIImage(data: data)
         } else {
-            return UIImage(named: "contact_placeholder")
+            return personPlaceholderImage
         }
     }
 }

@@ -9,7 +9,12 @@ target 'Bit' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
+  pod 'Firebase/Storage'
   pod 'PhoneNumberKit'
+  pod 'TOCropViewController'
+  pod 'GooglePlaces'
+  pod 'GooglePlacePicker'
+  pod 'GoogleMaps'
   
   post_install do |installer|
       installer.pods_project.targets.each do |target|

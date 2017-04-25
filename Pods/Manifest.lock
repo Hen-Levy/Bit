@@ -8,6 +8,9 @@ PODS:
   - Firebase/Database (3.14.0):
     - Firebase/Core
     - FirebaseDatabase (= 3.1.2)
+  - Firebase/Storage (3.14.0):
+    - Firebase/Core
+    - FirebaseStorage (= 1.1.0)
   - FirebaseAnalytics (3.7.0):
     - FirebaseCore (~> 3.5)
     - FirebaseInstanceID (~> 1.0)
@@ -21,6 +24,19 @@ PODS:
   - FirebaseDatabase (3.1.2):
     - FirebaseAnalytics (~> 3.7)
   - FirebaseInstanceID (1.0.9)
+  - FirebaseStorage (1.1.0):
+    - FirebaseAnalytics (~> 3.7)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleMaps (2.2.0):
+    - GoogleMaps/Maps (= 2.2.0)
+  - GoogleMaps/Base (2.2.0)
+  - GoogleMaps/Maps (2.2.0):
+    - GoogleMaps/Base
+  - GooglePlacePicker (2.2.0):
+    - GoogleMaps (= 2.2.0)
+    - GooglePlaces (= 2.2.0)
+  - GooglePlaces (2.2.0):
+    - GoogleMaps/Base (= 2.2.0)
   - GoogleToolboxForMac/DebugUtils (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/Defines (2.1.1)
@@ -38,12 +54,18 @@ PODS:
   - PhoneNumberKit/PhoneNumberKitCore (1.2.2)
   - PhoneNumberKit/UIKit (1.2.2):
     - PhoneNumberKit/PhoneNumberKitCore
+  - TOCropViewController (2.0.12)
 
 DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
+  - Firebase/Storage
+  - GoogleMaps
+  - GooglePlacePicker
+  - GooglePlaces
   - PhoneNumberKit
+  - TOCropViewController
 
 SPEC CHECKSUMS:
   Firebase: 85a581fb04e44f63ae9f4fbc8d6dabf4a4c18653
@@ -52,10 +74,15 @@ SPEC CHECKSUMS:
   FirebaseCore: 225d40532489835a034b8f4e2c9c87fbf4f615a2
   FirebaseDatabase: 05c96d7b43a7368dc91c07791adb49683e1738d1
   FirebaseInstanceID: 2d0518b1378fe9d685ef40cbdd63d2fdc1125339
+  FirebaseStorage: a5c55b23741a49a72af8f30f95b3bb5ddbeda12d
+  GoogleMaps: 104c418d61ab8a05dff06ed0784c25ea9d37da45
+  GooglePlacePicker: 345b1aabd42c9d6d9bf2369c1bae1234d903e764
+  GooglePlaces: bca867d5e9da15384c794b945e4226848bc6e9d9
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
   PhoneNumberKit: ffae8f18fb78c1425c7af973711b0b0fd4f4104f
+  TOCropViewController: e6e31b38d785a901e5651a1e7fff71bcda6c5214
 
-PODFILE CHECKSUM: 11bbfff3bffca5aaa92eaf3f1af289a99887b66d
+PODFILE CHECKSUM: e5ad01525df5a42159e0eff703edb33ad14f3d1c
 
 COCOAPODS: 1.0.1

@@ -164,7 +164,7 @@ extension ContactsViewController: UITableViewDataSource, UITableViewDelegate {
         
         if let friendUid = user.uid {
             
-            let myUID = FIRAuth.auth()!.currentUser!.uid
+            let myUID = User.shared.uid
             var path = "users/" + myUID + "/friends"
             
             // if contact isn't a friend yet

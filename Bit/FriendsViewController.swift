@@ -8,9 +8,13 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
+import FirebaseStorage
 
 class FriendsViewController: PeopleViewController {
     @IBOutlet weak var friendsTableView: UITableView!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
+    
     var allFriends = [Friend]()
     var searchResultsFriends = [Friend]()
     var friends: [Friend] {
@@ -47,7 +51,7 @@ class FriendsViewController: PeopleViewController {
     
     func observeFriends() {
         
-        let path = "users/" + FIRAuth.auth()!.currentUser!.uid + "/friends"
+        let path = "users/" + User.shared.uid + "/friends"
         dbRef.child(path).observe(.value, with: { [weak self] snapshot in
             guard let friendsDic = snapshot.value as? [String: AnyObject]  else {
                 return
@@ -70,6 +74,7 @@ class FriendsViewController: PeopleViewController {
                     }
                 }
                 strongSelf.sortFriends()
+                strongSelf.spinner.stopAnimating()
             })
         })
         
@@ -110,6 +115,20 @@ extension FriendsViewController: UITableViewDataSource, UITableViewDelegate {
         cell.contactImageView.image = friend.image
         cell.nameLabel.text = "bit"
         cell.subtitleLabel.text = friend.name
+        
+        if let friendImage = FriendsManager.shared.friendsImagesCache.object(forKey: NSString(string: friend.uid)) {
+            cell.contactImageView.image = friendImage
+        } else {
+            DispatchQueue.global(qos: .default).async {
+                FriendsManager.shared.downloadFriendImage(friendUid: friend.uid) { image in
+                    if let strongImage = image {
+                        DispatchQueue.main.async {
+                            cell.contactImageView.image = strongImage
+                        }
+                    }
+                }
+            }
+        }
         return cell
     }
     

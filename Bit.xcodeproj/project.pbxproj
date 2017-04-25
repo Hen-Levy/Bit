@@ -34,6 +34,11 @@
 		5AB6C2B61EAE00B00049F501 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2B51EAE00B00049F501 /* Friend.swift */; };
 		5AB6C2BA1EAE11580049F501 /* BitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2B91EAE11580049F501 /* BitCell.swift */; };
 		5AB6C2BC1EAE26340049F501 /* BitItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2BB1EAE26340049F501 /* BitItem.swift */; };
+		5AB6C2BE1EAF2F750049F501 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2BD1EAF2F750049F501 /* User.swift */; };
+		5AB6C2C01EAF3E530049F501 /* UIImage+Scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2BF1EAF3E530049F501 /* UIImage+Scale.swift */; };
+		5AB6C2C21EAF3FDD0049F501 /* FriendsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */; };
+		5AB6C2C61EAF5ED30049F501 /* BitsLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2C51EAF5ED30049F501 /* BitsLocationsViewController.swift */; };
+		5AB6C2C81EAF66490049F501 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB6C2C71EAF66490049F501 /* AdSupport.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +71,11 @@
 		5AB6C2B51EAE00B00049F501 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		5AB6C2B91EAE11580049F501 /* BitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitCell.swift; sourceTree = "<group>"; };
 		5AB6C2BB1EAE26340049F501 /* BitItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitItem.swift; sourceTree = "<group>"; };
+		5AB6C2BD1EAF2F750049F501 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		5AB6C2BF1EAF3E530049F501 /* UIImage+Scale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Scale.swift"; sourceTree = "<group>"; };
+		5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsManager.swift; sourceTree = "<group>"; };
+		5AB6C2C51EAF5ED30049F501 /* BitsLocationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitsLocationsViewController.swift; sourceTree = "<group>"; };
+		5AB6C2C71EAF66490049F501 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		6AE5C62B7B38A10A7024CFAE /* Pods-Bit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bit/Pods-Bit.debug.xcconfig"; sourceTree = "<group>"; };
 		F8FD678B0D5872BFC57A7DED /* Pods-Bit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bit/Pods-Bit.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AB6C2C81EAF66490049F501 /* AdSupport.framework in Frameworks */,
 				10DC1A1F64C5A8D9BE03E96E /* Pods_Bit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +105,7 @@
 		3895E8B8CC9E232AF4FBB10B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5AB6C2C71EAF66490049F501 /* AdSupport.framework */,
 				4D7A53B162E4E90B9FD0F12E /* Pods_Bit.framework */,
 			);
 			name = Frameworks;
@@ -132,6 +144,7 @@
 				5AB6C2A31EACB28E0049F501 /* ContactsViewController.swift */,
 				5AB6C2AB1EACC5C80049F501 /* ContactCell.swift */,
 				5AB6C2B11EAD05450049F501 /* BitsViewController.swift */,
+				5AB6C2C51EAF5ED30049F501 /* BitsLocationsViewController.swift */,
 				5AB6C2B91EAE11580049F501 /* BitCell.swift */,
 				5AB6C2BB1EAE26340049F501 /* BitItem.swift */,
 				5AA4391F1EA9362F007D5939 /* ProfileViewController.swift */,
@@ -148,13 +161,16 @@
 			isa = PBXGroup;
 			children = (
 				5AB6C2A91EACC3B30049F501 /* ContactsManager.swift */,
-				5A5CDBA61EA8D37C0046F31A /* KeyboardLayoutConstraint.swift */,
-				5A5CDBA01EA8BE1D0046F31A /* Validate.swift */,
 				5A5CDB961EA8AB840046F31A /* GradientView.swift */,
+				5AB6C2A51EACB64A0049F501 /* BarCustomView.swift */,
+				5A5CDBA61EA8D37C0046F31A /* KeyboardLayoutConstraint.swift */,
 				5AA4391B1EA8F3E8007D5939 /* UINavigationBar+Height.swift */,
 				5AA439251EA938F6007D5939 /* UINavigationBar+Gradient.swift */,
-				5AB6C2A51EACB64A0049F501 /* BarCustomView.swift */,
+				5A5CDBA01EA8BE1D0046F31A /* Validate.swift */,
 				5AB6C2B51EAE00B00049F501 /* Friend.swift */,
+				5AB6C2BD1EAF2F750049F501 /* User.swift */,
+				5AB6C2BF1EAF3E530049F501 /* UIImage+Scale.swift */,
+				5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -289,11 +305,13 @@
 				5AB6C2A41EACB28E0049F501 /* ContactsViewController.swift in Sources */,
 				5A5CDB9B1EA8B8E60046F31A /* ForgotPasswordViewController.swift in Sources */,
 				5A5CDBA11EA8BE1D0046F31A /* Validate.swift in Sources */,
+				5AB6C2C61EAF5ED30049F501 /* BitsLocationsViewController.swift in Sources */,
 				5A5CDB841EA8A5350046F31A /* AppDelegate.swift in Sources */,
 				5A5CDB991EA8B8D90046F31A /* SignUpViewController.swift in Sources */,
 				5AB6C2BA1EAE11580049F501 /* BitCell.swift in Sources */,
 				5AB6C2B61EAE00B00049F501 /* Friend.swift in Sources */,
 				5A5CDBA71EA8D37C0046F31A /* KeyboardLayoutConstraint.swift in Sources */,
+				5AB6C2C01EAF3E530049F501 /* UIImage+Scale.swift in Sources */,
 				5AA439201EA9362F007D5939 /* ProfileViewController.swift in Sources */,
 				5AB6C2AA1EACC3B30049F501 /* ContactsManager.swift in Sources */,
 				5AB6C2B21EAD05450049F501 /* BitsViewController.swift in Sources */,
@@ -302,10 +320,12 @@
 				5AA439261EA938F6007D5939 /* UINavigationBar+Gradient.swift in Sources */,
 				5A5CDB9D1EA8B8FD0046F31A /* FriendsViewController.swift in Sources */,
 				5A5CDBA51EA8C83A0046F31A /* FormViewController.swift in Sources */,
+				5AB6C2C21EAF3FDD0049F501 /* FriendsManager.swift in Sources */,
 				5AB6C2A61EACB64A0049F501 /* BarCustomView.swift in Sources */,
 				5A5CDB971EA8AB840046F31A /* GradientView.swift in Sources */,
 				5AB6C2BC1EAE26340049F501 /* BitItem.swift in Sources */,
 				5AA4391E1EA9298E007D5939 /* SplashViewController.swift in Sources */,
+				5AB6C2BE1EAF2F750049F501 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

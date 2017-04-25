@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import GooglePlaces
 
 class BitsViewController: UIViewController {
     @IBOutlet weak var bitsTableView: UITableView!
@@ -22,6 +23,7 @@ class BitsViewController: UIViewController {
     var dbRef = FIRDatabase.database().reference()
     var friend: Friend!
     var bits = [BitItem]()
+    var selectedLocationBit: BitItem!
     
     
     // MARK: View Lifecycle
@@ -32,12 +34,25 @@ class BitsViewController: UIViewController {
         friendNameLabel.text = friend.name
         friendImageView.image = friend.image
         
+        getFriendImage()
         observeFriendBits()
+    }
+    
+    func getFriendImage() {
+        if let friendImage = FriendsManager.shared.friendsImagesCache.object(forKey: NSString(string: friend.uid)) {
+            friendImageView.image = friendImage
+        } else {
+            FriendsManager.shared.downloadFriendImage(friendUid: friend.uid) { [weak self] image in
+                if let strongImage = image {
+                    self?.friendImageView.image = strongImage
+                }
+            }
+        }
     }
     
     func observeFriendBits() {
         
-        let path = "users/" + FIRAuth.auth()!.currentUser!.uid + "/friends/" + friend.uid + "/bits"
+        let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
         dbRef.child(path).observe(.value, with: { [weak self] snapshot in
             if let bitsDic = snapshot.value as? [String: AnyObject] {
                 
@@ -50,7 +65,13 @@ class BitsViewController: UIViewController {
                     let uid = (bit["uid"] as? String) ?? ""
                     let text = (bit["text"] as? String) ?? ""
                     let pin = (bit["pin"] as? Int) ?? 0
-                    let bitItem = BitItem(uid: uid, text: text, pin: pin)
+                    
+                    var coordinate: CLLocationCoordinate2D?
+                    if let location = bit["location"] as? [String: Double] {
+                        coordinate = CLLocationCoordinate2D(latitude: location["lat"]!, longitude: location["long"]!)
+                    }
+                    
+                    let bitItem = BitItem(uid: uid, text: text, pin: pin, coordinate: coordinate)
                     if !strongSelf.bits.contains { $0.text == text} {
                         strongSelf.bits.append(bitItem)
                     }
@@ -98,13 +119,55 @@ class BitsViewController: UIViewController {
             let indexPath = bitsTableView.indexPath(for: cell) {
             
             let bit = bits[indexPath.row]
-            bit.pin = 1
-            let bitDic = ["uid": bit.uid,
+            bit.pin = bit.pin == 0 ? 1 : 0
+            var bitDic = ["uid": bit.uid,
                           "text": bit.text,
                           "pin": bit.pin] as [String : Any]
-            let path = "users/" + FIRAuth.auth()!.currentUser!.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
+            
+            if let coordinate = bit.coordinate {
+                bitDic["location"] = ["lat": coordinate.latitude,
+                                      "long":coordinate.longitude]
+            }
+            
+            let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
             FIRDatabase.database().reference().child(path).setValue(bitDic)
             sortBits()
+        }
+    }
+    
+    func addBitLocation(sender: UIButton) {
+        
+        guard let cell = sender.superview?.superview as? BitCell,
+            let indexPath = bitsTableView.indexPath(for: cell) else {
+                return
+        }
+        selectedLocationBit = bits[indexPath.row]
+        
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        
+        // Set a filter to return only addresses.
+        let filter = GMSAutocompleteFilter()
+        filter.type = .address
+        autocompleteController.autocompleteFilter = filter
+        
+        overlayView.isHidden = false
+        
+        addChildViewController(autocompleteController)
+        view.addSubview(autocompleteController.view)
+        
+        autocompleteController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[view]-20-|", options: .alignAllLeft, metrics: nil, views: ["view":autocompleteController.view]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-120-[view]-120-|", options: .alignAllLeft, metrics: nil, views: ["view":autocompleteController.view]))
+        
+        autocompleteController.didMove(toParentViewController: self)
+    }
+    
+    // MARK: Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let bitsLocationsViewController = segue.destination as? BitsLocationsViewController {
+            bitsLocationsViewController.friend = friend
         }
     }
 }
@@ -124,10 +187,19 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         let pinImageNamed = bit.pin == 0 ? "favorite_border" : "favorite"
         cell.pinButton.setImage(UIImage(named: pinImageNamed), for: .normal)
         
+        let locationImageNamed = bit.coordinate == nil ? "location_off" : "location_on"
+        cell.bitLocationButton.setImage(UIImage(named: locationImageNamed), for: .normal)
+        
         if !cell.pinButton.allTargets.isEmpty {
             cell.pinButton.removeTarget(self, action: #selector(pinBit(sender:)), for: .touchUpInside)
         }
         cell.pinButton.addTarget(self, action: #selector(pinBit(sender:)), for: .touchUpInside)
+        
+        if !cell.bitLocationButton.allTargets.isEmpty {
+            cell.bitLocationButton.removeTarget(self, action: #selector(addBitLocation(sender:)), for: .touchUpInside)
+        }
+        cell.bitLocationButton.addTarget(self, action: #selector(addBitLocation(sender:)), for: .touchUpInside)
+        
         return cell
     }
 
@@ -138,7 +210,7 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         let bit = bits[indexPath.row]
-        let path = "users/" + FIRAuth.auth()!.currentUser!.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
+        let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
         dbRef.child(path).removeValue()
         bits.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
@@ -146,38 +218,80 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension BitsViewController: UITextFieldDelegate {
-        
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            bitTextField.resignFirstResponder()
-            spinner.startAnimating()
-            DispatchQueue.main.async { [weak self] in
-                self?.saveNewBit()
-            }
-            return true
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        bitTextField.resignFirstResponder()
+        spinner.startAnimating()
+        DispatchQueue.main.async { [weak self] in
+            self?.saveNewBit()
         }
-        
-        @IBAction func saveNewBit() {
-            guard let bitText = bitTextField.text else {
-                spinner.stopAnimating()
-                return
-            }
-            
-            var path = "users/" + FIRAuth.auth()!.currentUser!.uid + "/friends/" + friend.uid + "/bits"
-            let uid = dbRef.child(path).childByAutoId().key
-            
-            let bitDic = ["uid": uid,
-                          "text": bitText,
-                          "pin": 0] as [String : Any]
-            path = path + "/" + uid
-            dbRef.child(path).setValue(bitDic)
-            
+        return true
+    }
+    
+    @IBAction func saveNewBit() {
+        guard let bitText = bitTextField.text else {
             spinner.stopAnimating()
-            cancel()
+            return
         }
         
-        @IBAction func cancel() {
-            bitTextField.resignFirstResponder()
-            overlayView.isHidden = true
-            addNewBitView.removeFromSuperview()
-        }
+        var path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
+        let uid = dbRef.child(path).childByAutoId().key
+        
+        let bitDic = ["uid": uid,
+                      "text": bitText,
+                      "pin": 0] as [String : Any]
+        path = path + "/" + uid
+        dbRef.child(path).setValue(bitDic)
+        
+        spinner.stopAnimating()
+        cancel()
+    }
+    
+    @IBAction func cancel() {
+        bitTextField.resignFirstResponder()
+        overlayView.isHidden = true
+        addNewBitView.removeFromSuperview()
+    }
+}
+
+
+extension BitsViewController: GMSAutocompleteViewControllerDelegate {
+    
+    // Handle the user's selection.
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        
+        let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + selectedLocationBit.uid + "/location"
+        dbRef.child(path).setValue(["lat": place.coordinate.latitude,
+                                    "long": place.coordinate.longitude])
+        selectedLocationBit.coordinate = place.coordinate
+        bitsTableView.reloadData()
+        closePopup(viewController)
+    }
+    
+    func closePopup(_ viewController: GMSAutocompleteViewController) {
+        viewController.willMove(toParentViewController: nil)
+        viewController.view.removeFromSuperview()
+        viewController.removeFromParentViewController()
+        overlayView.isHidden = true
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        // TODO: handle the error.
+        print("Error: ", error.localizedDescription)
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        closePopup(viewController)
+    }
+    
+    // Show the network activity indicator.
+    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+    
+    // Hide the network activity indicator.
+    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
+    
 }
