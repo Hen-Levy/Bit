@@ -11,6 +11,8 @@ import FirebaseAuth
 import FirebaseDatabase
 import GooglePlaces
 
+let dateFormat = "yyyy-MM-dd HH:mm"
+
 class BitsViewController: UIViewController {
     @IBOutlet weak var bitsTableView: UITableView!
     @IBOutlet weak var friendNameLabel: UILabel!
@@ -214,6 +216,26 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         dbRef.child(path).removeValue()
         bits.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let bit = bits[indexPath.row]
+        
+        let df = DateFormatter()
+        df.dateFormat = dateFormat
+        let dateSentStr = df.string(from: Date())
+        
+        // update database that the bit was sent
+        let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/lastBitSent"
+        dbRef.child(path).setValue(["date": dateSentStr,
+                                    "text": bit.text])
+        
+        // show alert that says that the bit was sent
+        let alertController = UIAlertController(title: "Bit was sent!", message: bit.text, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 }
 

@@ -211,7 +211,7 @@
                                             <action selector="dismissKeyboard" destination="s9f-lL-8Wc" eventType="touchUpInside" id="3OD-8y-XEY"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="49524ABC-1C4E-4EC7-A1B6-E57B44AA73AD" translatesAutoresizingMaskIntoConstraints="NO" id="NVI-sc-LQI">
+                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0F2BDB4E-4FE6-4189-8E31-9E20FB6BBA9F" translatesAutoresizingMaskIntoConstraints="NO" id="NVI-sc-LQI">
                                         <rect key="frame" x="150" y="50" width="75" height="55"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Ep-bI-KGZ">
@@ -1136,7 +1136,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="49524ABC-1C4E-4EC7-A1B6-E57B44AA73AD" width="75" height="55">
+        <image name="0F2BDB4E-4FE6-4189-8E31-9E20FB6BBA9F" width="75" height="55">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQrLjE3OlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

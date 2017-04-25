@@ -73,6 +73,18 @@ class FriendsViewController: PeopleViewController {
                         strongSelf.allFriends.append(friend)
                     }
                 }
+                
+                for fKey in Array(friendsDic.keys) {
+                    let fDic = friendsDic[fKey] as! [String: AnyObject]
+                    if let lastBitSent = fDic["lastBitSent"] as? [String: AnyObject] {
+                        for f in strongSelf.allFriends {
+                            if f.uid == fKey {
+                                f.lastBitText = lastBitSent["text"] as? String
+                                f.lastBitSentDate = lastBitSent["date"] as? String
+                            }
+                        }
+                    }
+                }
                 strongSelf.sortFriends()
                 strongSelf.spinner.stopAnimating()
             })
@@ -81,7 +93,12 @@ class FriendsViewController: PeopleViewController {
     }
     
     func sortFriends() {
-//        bits = bits.sorted {$0.pin > $1.pin}
+        allFriends = allFriends.sorted(by: { (friendA, friendB) -> Bool in
+            if let dateA = friendA.lastBitDate, let dateB = friendB.lastBitDate {
+                return dateA > dateB
+            }
+            return false
+        })
         friendsTableView.reloadData()
     }
     
@@ -113,8 +130,13 @@ extension FriendsViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ContactCellIdentifier", for: indexPath) as! ContactCell
         let friend = friends[indexPath.row]
         cell.contactImageView.image = friend.image
-        cell.nameLabel.text = "bit"
-        cell.subtitleLabel.text = friend.name
+        cell.nameLabel.text = friend.lastBitText
+        
+        if let lastDateStr = friend.lastBitSentDate {
+            cell.subtitleLabel.text = lastDateStr + "  " + friend.name
+        } else {
+            cell.subtitleLabel.text = friend.name
+        }
         
         if let friendImage = FriendsManager.shared.friendsImagesCache.object(forKey: NSString(string: friend.uid)) {
             cell.contactImageView.image = friendImage
