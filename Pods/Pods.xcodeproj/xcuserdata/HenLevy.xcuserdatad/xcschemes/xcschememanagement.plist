@@ -24,6 +24,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftyJSON.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>TOCropViewController-TOCropViewControllerBundle.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,6 +47,16 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>2CCD23303EE88763D6172564AE138EA7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5FBECE9386ADF6DA51CCFB905984CD94</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>7334D5AB52649BF821BA54A83D161456</key>
 		<dict>
 			<key>primary</key>
@@ -52,17 +67,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B25217BB18E48E43A42FE485EE2BC4AF</key>
+		<key>A01994336209F2FFE90C02EB54FC5D8A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E5CAACEAC92DE5B5AD177A3A682C1BDE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F0536CA01CC025E2751C83B404BE470E</key>
+		<key>DA3DD826FFF3689C55BF4B9972305F89</key>
 		<dict>
 			<key>primary</key>
 			<true/>

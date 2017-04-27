@@ -15,6 +15,7 @@ target 'Bit' do
   pod 'GooglePlaces'
   pod 'GooglePlacePicker'
   pod 'GoogleMaps'
+  pod 'SwiftyJSON'
   
   post_install do |installer|
       installer.pods_project.targets.each do |target|

@@ -54,6 +54,7 @@ PODS:
   - PhoneNumberKit/PhoneNumberKitCore (1.2.2)
   - PhoneNumberKit/UIKit (1.2.2):
     - PhoneNumberKit/PhoneNumberKitCore
+  - SwiftyJSON (3.1.4)
   - TOCropViewController (2.0.12)
 
 DEPENDENCIES:
@@ -65,6 +66,7 @@ DEPENDENCIES:
   - GooglePlacePicker
   - GooglePlaces
   - PhoneNumberKit
+  - SwiftyJSON
   - TOCropViewController
 
 SPEC CHECKSUMS:
@@ -81,8 +83,9 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
   PhoneNumberKit: ffae8f18fb78c1425c7af973711b0b0fd4f4104f
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   TOCropViewController: e6e31b38d785a901e5651a1e7fff71bcda6c5214
 
-PODFILE CHECKSUM: e5ad01525df5a42159e0eff703edb33ad14f3d1c
+PODFILE CHECKSUM: 6b83135e4c41e799451e10b48b582a6002585d56
 
 COCOAPODS: 1.0.1

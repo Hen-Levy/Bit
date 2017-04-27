@@ -15,6 +15,7 @@ let dateFormat = "yyyy-MM-dd HH:mm"
 
 class BitsViewController: UIViewController {
     @IBOutlet weak var bitsTableView: UITableView!
+    @IBOutlet weak var suggestionsTableView: UITableView!
     @IBOutlet weak var friendNameLabel: UILabel!
     @IBOutlet weak var friendImageView: UIImageView!
     @IBOutlet weak var overlayView: UIView!
@@ -25,6 +26,7 @@ class BitsViewController: UIViewController {
     var dbRef = FIRDatabase.database().reference()
     var friend: Friend!
     var bits = [BitItem]()
+    var suggestions = [BitItem]()
     var selectedLocationBit: BitItem!
     
     
@@ -38,6 +40,7 @@ class BitsViewController: UIViewController {
         
         getFriendImage()
         observeFriendBits()
+        setupSuggestedBits()
     }
     
     func getFriendImage() {
@@ -87,6 +90,16 @@ class BitsViewController: UIViewController {
     func sortBits() {
         bits = bits.sorted {$0.pin > $1.pin}
         bitsTableView.reloadData()
+    }
+    
+    func setupSuggestedBits() {
+        SuggestedBits.for(userUID: User.shared.uid, friendUID: friend.uid) { [weak self] (suggestedBitsTexts) in
+            
+            for bitText in suggestedBitsTexts {
+                self?.suggestions.append(BitItem(uid: "", text: bitText, pin: 0, coordinate: nil))
+            }
+            self?.suggestionsTableView.reloadData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -177,13 +190,13 @@ class BitsViewController: UIViewController {
 extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bits.count
+        return tableView == bitsTableView ? bits.count : suggestions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BitCellIdentifier", for: indexPath) as! BitCell
         
-        let bit = bits[indexPath.row]
+        let bit = tableView == bitsTableView ? bits[indexPath.row] : suggestions[indexPath.row]
         cell.bitTextLabel.text = bit.text
         
         let pinImageNamed = bit.pin == 0 ? "favorite_border" : "favorite"
@@ -211,7 +224,7 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        let bit = bits[indexPath.row]
+        let bit = tableView == bitsTableView ? bits[indexPath.row] : suggestions[indexPath.row]
         let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
         dbRef.child(path).removeValue()
         bits.remove(at: indexPath.row)
@@ -221,7 +234,7 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let bit = bits[indexPath.row]
+        let bit = tableView == bitsTableView ? bits[indexPath.row] : suggestions[indexPath.row]
         
         let df = DateFormatter()
         df.dateFormat = dateFormat
@@ -236,6 +249,9 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         let alertController = UIAlertController(title: "Bit was sent!", message: bit.text, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
+        
+        // if the bit is in suggestions - save it as a new bit in bits
+        saveNewBitWithText(bit.text)
     }
 }
 
@@ -256,6 +272,13 @@ extension BitsViewController: UITextFieldDelegate {
             return
         }
         
+        saveNewBitWithText(bitText)
+        
+        spinner.stopAnimating()
+        cancel()
+    }
+    
+    func saveNewBitWithText(_ bitText: String) {
         var path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
         let uid = dbRef.child(path).childByAutoId().key
         
@@ -264,9 +287,6 @@ extension BitsViewController: UITextFieldDelegate {
                       "pin": 0] as [String : Any]
         path = path + "/" + uid
         dbRef.child(path).setValue(bitDic)
-        
-        spinner.stopAnimating()
-        cancel()
     }
     
     @IBAction func cancel() {

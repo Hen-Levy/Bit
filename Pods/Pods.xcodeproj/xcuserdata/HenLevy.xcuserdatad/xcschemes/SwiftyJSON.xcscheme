@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'A01994336209F2FFE90C02EB54FC5D8A'
-               BlueprintName = 'TOCropViewController-TOCropViewControllerBundle'
+               BlueprintIdentifier = 'DA3DD826FFF3689C55BF4B9972305F89'
+               BlueprintName = 'SwiftyJSON'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'TOCropViewControllerBundle.bundle'>
+               BuildableName = 'SwiftyJSON.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
