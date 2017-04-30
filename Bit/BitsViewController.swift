@@ -10,6 +10,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import GooglePlaces
+import Alamofire
 
 let dateFormat = "yyyy-MM-dd HH:mm"
 
@@ -236,6 +237,8 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         
         let bit = tableView == bitsTableView ? bits[indexPath.row] : suggestions[indexPath.row]
         
+        requestSendBit(bit: bit)
+        
         let df = DateFormatter()
         df.dateFormat = dateFormat
         let dateSentStr = df.string(from: Date())
@@ -252,6 +255,31 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         
         // if the bit is in suggestions - save it as a new bit in bits
         saveNewBitWithText(bit.text)
+    }
+    
+    func requestSendBit(bit: BitItem) {
+        
+        FIRDatabase.database().reference().child("users/\(friend.uid)").observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            
+            guard let friendDic = snapshot.value as? [String: AnyObject],
+            let token = friendDic["registrationToken"] as? String else {
+                self?.spinner.stopAnimating()
+                return
+            }
+            
+            let params: Parameters = ["notification": ["title": User.shared.name, "body": bit.text],
+                                      "to": token]
+            
+            Alamofire.request("https://fcm.googleapis.com/fcm/send",
+                              method: HTTPMethod.post,
+                              parameters: params, encoding: JSONEncoding.default,
+                              headers: ["Authorization": "key=\(serverKey)"]).responseJSON(completionHandler: { (response) in
+                                
+                                if let json = response.result.value as? Dictionary<String, Any> {
+                                    debugPrint(json)
+                                }
+                              })
+        })
     }
 }
 

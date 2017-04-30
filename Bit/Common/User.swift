@@ -10,6 +10,8 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import FirebaseMessaging
+import FirebaseInstanceID
 
 let personPlaceholderImage = UIImage(named: "contact_placeholder")
 
@@ -23,6 +25,9 @@ class User {
     }
     var email: String {
         return FIRAuth.auth()?.currentUser?.email ?? ""
+    }
+    var registrationToken: String? {
+        return FIRInstanceID.instanceID().token()
     }
     private var downloadedImage: UIImage?
     
@@ -76,5 +81,12 @@ class User {
     
     func clearUserCachedInfo() {
         downloadedImage = nil
+    }
+    
+    func saveRegistrationToken() {
+        if let token = registrationToken {
+            let path = "users/" + uid + "/registrationToken"
+            FIRDatabase.database().reference().child(path).setValue(token)
+        }
     }
 }

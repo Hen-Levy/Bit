@@ -26,7 +26,8 @@ class SuggestedBits {
                     
                     // to dictionary
                     guard let strongJsonDic = jsonDic,
-                    let titles = strongJsonDic[userUID] as? [String] else {
+//                    let titles = strongJsonDic[userUID] as? [String] else {
+                    let titles = strongJsonDic["A"] as? [String] else {
                         return
                     }
                     debugPrint("conversation: \(strongJsonDic)")

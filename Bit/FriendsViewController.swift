@@ -54,12 +54,14 @@ class FriendsViewController: PeopleViewController {
         let path = "users/" + User.shared.uid + "/friends"
         dbRef.child(path).observe(.value, with: { [weak self] snapshot in
             guard let friendsDic = snapshot.value as? [String: AnyObject]  else {
+                self?.spinner.stopAnimating()
                 return
             }
             self?.dbRef.child("users").observe(.value, with: { [weak self] snapshot in
                 
                 guard let strongSelf = self,
                 let usersDic = snapshot.value as? [String: AnyObject] else {
+                    self?.spinner.stopAnimating()
                     return
                 }
                 

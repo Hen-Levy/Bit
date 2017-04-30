@@ -62,6 +62,10 @@ class SignUpViewController: FormViewController {
                 
                 ref.child("phones").child(validPhone).setValue(user!.uid)
                 
+                if let _ = User.shared.registrationToken {
+                    User.shared.saveRegistrationToken()
+                }
+                
                 // update user display name
                 let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
                 changeRequest?.displayName = strongSelf.nameTextField.text

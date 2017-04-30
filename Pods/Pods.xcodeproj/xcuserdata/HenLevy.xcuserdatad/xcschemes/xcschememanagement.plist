@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Alamofire.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>GTMSessionFetcher.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -20,6 +25,11 @@
 			<false/>
 		</dict>
 		<key>Pods-Bit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Protobuf.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -42,17 +52,22 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>03E6E56F8533C2E42C696D7CCAC42910</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>23BA9083ED0D2392A167A8AFA04427FA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2CCD23303EE88763D6172564AE138EA7</key>
+		<key>2D107F7DD86FEEF7454E23389680B8F6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5FBECE9386ADF6DA51CCFB905984CD94</key>
+		<key>724B424C459DFE04D141E054F1A38A0F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -62,17 +77,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7D04535608058A2FABC0D16935868FB9</key>
+		<key>79C040AFDDCE1BCBF6D8B5EB0B85887F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A01994336209F2FFE90C02EB54FC5D8A</key>
+		<key>BF14857E95A234855FAA11BEA69A89CC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DA3DD826FFF3689C55BF4B9972305F89</key>
+		<key>C69C85D95DFB37E5B541F2ABD8509A3A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D980F7888DA2348851A163F44488819E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

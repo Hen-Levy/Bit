@@ -33,6 +33,9 @@ class WelcomeViewController: FormViewController {
             if let strongError = error {
                 debugPrint(strongError.localizedDescription)
             } else {
+                if User.shared.registrationToken != nil {
+                    User.shared.saveRegistrationToken()
+                }
                 self.performSegue(withIdentifier: "SegueToFriends", sender: nil)
             }
         })
