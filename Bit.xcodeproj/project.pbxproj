@@ -39,6 +39,10 @@
 		5AB6C2C21EAF3FDD0049F501 /* FriendsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */; };
 		5AB6C2C61EAF5ED30049F501 /* BitsLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB6C2C51EAF5ED30049F501 /* BitsLocationsViewController.swift */; };
 		5AB6C2C81EAF66490049F501 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB6C2C71EAF66490049F501 /* AdSupport.framework */; };
+		5ABE63AB1EB9E1D1001ECCD5 /* LastBitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE63AA1EB9E1D1001ECCD5 /* LastBitCell.swift */; };
+		5ABE63AD1EB9F610001ECCD5 /* Radar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE63AC1EB9F610001ECCD5 /* Radar.swift */; };
+		5ABE63AF1EB9F879001ECCD5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE63AE1EB9F879001ECCD5 /* LocationManager.swift */; };
+		5ABE63B11EBA0273001ECCD5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE63B01EBA0273001ECCD5 /* API.swift */; };
 		5AD835461EB20FD70036398B /* SuggestedBits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD835451EB20FD70036398B /* SuggestedBits.swift */; };
 		5AD835481EB214480036398B /* LSA+TFIDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD835471EB214480036398B /* LSA+TFIDF.swift */; };
 /* End PBXBuildFile section */
@@ -79,6 +83,10 @@
 		5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsManager.swift; sourceTree = "<group>"; };
 		5AB6C2C51EAF5ED30049F501 /* BitsLocationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitsLocationsViewController.swift; sourceTree = "<group>"; };
 		5AB6C2C71EAF66490049F501 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		5ABE63AA1EB9E1D1001ECCD5 /* LastBitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastBitCell.swift; sourceTree = "<group>"; };
+		5ABE63AC1EB9F610001ECCD5 /* Radar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Radar.swift; sourceTree = "<group>"; };
+		5ABE63AE1EB9F879001ECCD5 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		5ABE63B01EBA0273001ECCD5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		5AD835451EB20FD70036398B /* SuggestedBits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestedBits.swift; sourceTree = "<group>"; };
 		5AD835471EB214480036398B /* LSA+TFIDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LSA+TFIDF.swift"; sourceTree = "<group>"; };
 		6AE5C62B7B38A10A7024CFAE /* Pods-Bit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bit/Pods-Bit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -154,6 +162,7 @@
 				5AB6C2B91EAE11580049F501 /* BitCell.swift */,
 				5AB6C2BB1EAE26340049F501 /* BitItem.swift */,
 				5AA4391F1EA9362F007D5939 /* ProfileViewController.swift */,
+				5ABE63AA1EB9E1D1001ECCD5 /* LastBitCell.swift */,
 				5A5CDB871EA8A5350046F31A /* Main.storyboard */,
 				5A5CDB8A1EA8A5350046F31A /* Assets.xcassets */,
 				5A5CDB8C1EA8A5350046F31A /* LaunchScreen.storyboard */,
@@ -179,6 +188,9 @@
 				5AB6C2C11EAF3FDD0049F501 /* FriendsManager.swift */,
 				5AD835451EB20FD70036398B /* SuggestedBits.swift */,
 				5AD835471EB214480036398B /* LSA+TFIDF.swift */,
+				5ABE63AC1EB9F610001ECCD5 /* Radar.swift */,
+				5ABE63AE1EB9F879001ECCD5 /* LocationManager.swift */,
+				5ABE63B01EBA0273001ECCD5 /* API.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -320,6 +332,7 @@
 				5A5CDBA11EA8BE1D0046F31A /* Validate.swift in Sources */,
 				5AB6C2C61EAF5ED30049F501 /* BitsLocationsViewController.swift in Sources */,
 				5A5CDB841EA8A5350046F31A /* AppDelegate.swift in Sources */,
+				5ABE63AF1EB9F879001ECCD5 /* LocationManager.swift in Sources */,
 				5A5CDB991EA8B8D90046F31A /* SignUpViewController.swift in Sources */,
 				5AB6C2BA1EAE11580049F501 /* BitCell.swift in Sources */,
 				5AB6C2B61EAE00B00049F501 /* Friend.swift in Sources */,
@@ -337,9 +350,12 @@
 				5AB6C2A61EACB64A0049F501 /* BarCustomView.swift in Sources */,
 				5A5CDB971EA8AB840046F31A /* GradientView.swift in Sources */,
 				5AB6C2BC1EAE26340049F501 /* BitItem.swift in Sources */,
+				5ABE63AD1EB9F610001ECCD5 /* Radar.swift in Sources */,
 				5AA4391E1EA9298E007D5939 /* SplashViewController.swift in Sources */,
 				5AB6C2BE1EAF2F750049F501 /* User.swift in Sources */,
+				5ABE63AB1EB9E1D1001ECCD5 /* LastBitCell.swift in Sources */,
 				5AD835481EB214480036398B /* LSA+TFIDF.swift in Sources */,
+				5ABE63B11EBA0273001ECCD5 /* API.swift in Sources */,
 				5AD835461EB20FD70036398B /* SuggestedBits.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

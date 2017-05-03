@@ -26,8 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         UIApplication.shared.statusBarStyle = .lightContent
-        GMSPlacesClient.provideAPIKey("AIzaSyClF1T9Bu8q4wBYaWED8RYMji01yHTCTN8")
-        GMSServices.provideAPIKey("AIzaSyCbNyMA-qmx3WHDnEYQxaZUD2RvQJPv62U")
+        GMSPlacesClient.provideAPIKey("AIzaSyCGa4MRXnPODGsXZxVyPU3txdWFjsW7-r8")
+        GMSServices.provideAPIKey("AIzaSyAfsExbNf7Ks5MMMQ99aOpDJuvSk6fmVaQ")
         
         if #available(iOS 10.0, *) {
             // For iOS 10 display notification (sent via APNS)
@@ -163,6 +163,10 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         
         // Print full message.
         print(userInfo)
+        
+        if let aps = userInfo["aps"] as? [String: Any] {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "receiveBitNotification"), object: nil, userInfo: aps)
+        }
         
         // Change this to your preferred presentation option
         completionHandler([])

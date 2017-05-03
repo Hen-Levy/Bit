@@ -29,6 +29,7 @@ class BitsViewController: UIViewController {
     var bits = [BitItem]()
     var suggestions = [BitItem]()
     var selectedLocationBit: BitItem!
+    let api = API()
     
     
     // MARK: View Lifecycle
@@ -57,7 +58,7 @@ class BitsViewController: UIViewController {
     }
     
     func observeFriendBits() {
-        
+
         let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
         dbRef.child(path).observe(.value, with: { [weak self] snapshot in
             if let bitsDic = snapshot.value as? [String: AnyObject] {
@@ -67,20 +68,30 @@ class BitsViewController: UIViewController {
                 }
                 let bitsArray = Array(bitsDic.values)
                 
+                let df = DateFormatter()
+                df.dateFormat = dateFormat
+                
                 for bit in bitsArray {
                     let uid = (bit["uid"] as? String) ?? ""
                     let text = (bit["text"] as? String) ?? ""
                     let pin = (bit["pin"] as? Int) ?? 0
+                    let sent = (bit["sent"] as? Bool) ?? false
                     
                     var coordinate: CLLocationCoordinate2D?
                     if let location = bit["location"] as? [String: Double] {
                         coordinate = CLLocationCoordinate2D(latitude: location["lat"]!, longitude: location["long"]!)
+                    }
+                    var dateSent: Date?
+                    if let dateStr = bit["dateSent"] as? String {
+                        dateSent = df.date(from: dateStr)
                     }
                     
                     let bitItem = BitItem(uid: uid, text: text, pin: pin, coordinate: coordinate)
                     if !strongSelf.bits.contains { $0.text == text} {
                         strongSelf.bits.append(bitItem)
                     }
+                    bitItem.sent = sent
+                    bitItem.dateSent = dateSent
                 }
                 
                 strongSelf.sortBits()
@@ -138,11 +149,18 @@ class BitsViewController: UIViewController {
             bit.pin = bit.pin == 0 ? 1 : 0
             var bitDic = ["uid": bit.uid,
                           "text": bit.text,
-                          "pin": bit.pin] as [String : Any]
+                          "pin": bit.pin,
+                          "sent": bit.sent] as [String : Any]
             
             if let coordinate = bit.coordinate {
                 bitDic["location"] = ["lat": coordinate.latitude,
                                       "long":coordinate.longitude]
+            }
+            
+            let df = DateFormatter()
+            df.dateFormat = dateFormat
+            if let date = bit.dateSent {
+                bitDic["dateSent"] = df.string(from: date)
             }
             
             let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
@@ -237,50 +255,70 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         
         let bit = tableView == bitsTableView ? bits[indexPath.row] : suggestions[indexPath.row]
         
-        requestSendBit(bit: bit)
+//        requestSendBit(bit: bit)
+        
+        api.requestSendBit(senderName: User.shared.name, bitText: bit.text, friendUID: friend.uid, spinner: self.spinner)
         
         let df = DateFormatter()
         df.dateFormat = dateFormat
         let dateSentStr = df.string(from: Date())
         
         // update database that the bit was sent
-        let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/lastBitSent"
+        var path = "users/" + friend.uid + "/friends/" + User.shared.uid + "/lastBitSent"
         dbRef.child(path).setValue(["date": dateSentStr,
                                     "text": bit.text])
+        
+        // update specific bit with date
+        var bitDic = ["uid": bit.uid,
+                      "text": bit.text,
+                      "pin": bit.pin,
+                      "sent": true,
+                      "dateSent": dateSentStr] as [String : Any]
+        
+        if let coordinate = bit.coordinate {
+            bitDic["location"] = ["lat": coordinate.latitude,
+                                  "long":coordinate.longitude]
+        }
+        // if the bit is in suggestions - save it as a new bit in bits
+        if tableView == suggestionsTableView {
+            saveNewBitWithText(bit.text)
+        } else {
+            path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
+            dbRef.child(path).setValue(bitDic)
+        }
         
         // show alert that says that the bit was sent
         let alertController = UIAlertController(title: "Bit was sent!", message: bit.text, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
         
-        // if the bit is in suggestions - save it as a new bit in bits
-        saveNewBitWithText(bit.text)
+
     }
     
-    func requestSendBit(bit: BitItem) {
-        
-        FIRDatabase.database().reference().child("users/\(friend.uid)").observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-            
-            guard let friendDic = snapshot.value as? [String: AnyObject],
-            let token = friendDic["registrationToken"] as? String else {
-                self?.spinner.stopAnimating()
-                return
-            }
-            
-            let params: Parameters = ["notification": ["title": User.shared.name, "body": bit.text],
-                                      "to": token]
-            
-            Alamofire.request("https://fcm.googleapis.com/fcm/send",
-                              method: HTTPMethod.post,
-                              parameters: params, encoding: JSONEncoding.default,
-                              headers: ["Authorization": "key=\(serverKey)"]).responseJSON(completionHandler: { (response) in
-                                
-                                if let json = response.result.value as? Dictionary<String, Any> {
-                                    debugPrint(json)
-                                }
-                              })
-        })
-    }
+//    func requestSendBit(bit: BitItem) {
+//        
+//        FIRDatabase.database().reference().child("users/\(friend.uid)").observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+//            
+//            guard let friendDic = snapshot.value as? [String: AnyObject],
+//            let token = friendDic["registrationToken"] as? String else {
+//                self?.spinner.stopAnimating()
+//                return
+//            }
+//            
+//            let params: Parameters = ["notification": ["title": User.shared.name, "body": bit.text],
+//                                      "to": token]
+//            
+//            Alamofire.request("https://fcm.googleapis.com/fcm/send",
+//                              method: HTTPMethod.post,
+//                              parameters: params, encoding: JSONEncoding.default,
+//                              headers: ["Authorization": "key=\(serverKey)"]).responseJSON(completionHandler: { (response) in
+//                                
+//                                if let json = response.result.value as? Dictionary<String, Any> {
+//                                    debugPrint(json)
+//                                }
+//                              })
+//        })
+//    }
 }
 
 extension BitsViewController: UITextFieldDelegate {

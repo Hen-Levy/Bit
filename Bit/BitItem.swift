@@ -14,6 +14,8 @@ class BitItem {
     var text = ""
     var pin = 0
     var coordinate: CLLocationCoordinate2D?
+    var sent = false
+    var dateSent: Date?
     
     init(uid: String, text: String, pin: Int, coordinate: CLLocationCoordinate2D?) {
         self.uid = uid
@@ -21,4 +23,8 @@ class BitItem {
         self.pin = pin
         self.coordinate = coordinate
     }
+}
+
+class LastBitItem: BitItem {
+    var sentTo = ""
 }

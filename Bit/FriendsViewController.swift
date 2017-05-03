@@ -25,10 +25,15 @@ class FriendsViewController: PeopleViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveBitNotification(notification:)), name: NSNotification.Name(rawValue: "receiveBitNotification"), object: nil)
+        
         barCustomView = BarCustomView(target: self)
         navigationController?.navigationBar.addSubview(barCustomView!)
         friendsTableView.tableFooterView = UIView(frame: CGRect.zero)
         observeFriends()
+        
+        // search for bits locations in area
+        Radar.shared.start()
     }
     
     override func viewDidLayoutSubviews() {
@@ -47,51 +52,62 @@ class FriendsViewController: PeopleViewController {
         barCustomView?.addFriendButton.isHidden = false
         barCustomView?.titleLabel.text = "Friends"
         barCustomView?.friendsSearchBar.delegate = self
+        observeFriendsSingleEvent()
+    }
+    
+    func observeFriendsSingleEvent() {
+        let path = "users/" + User.shared.uid + "/friends"
+        dbRef.child(path).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            self?.extractAndUpdate(snapshot: snapshot)
+        })
     }
     
     func observeFriends() {
-        
         let path = "users/" + User.shared.uid + "/friends"
         dbRef.child(path).observe(.value, with: { [weak self] snapshot in
-            guard let friendsDic = snapshot.value as? [String: AnyObject]  else {
-                self?.spinner.stopAnimating()
-                return
-            }
-            self?.dbRef.child("users").observe(.value, with: { [weak self] snapshot in
-                
-                guard let strongSelf = self,
+            self?.extractAndUpdate(snapshot: snapshot)
+        })
+        
+    }
+    
+    func extractAndUpdate(snapshot: FIRDataSnapshot) {
+        guard let friendsDic = snapshot.value as? [String: AnyObject]  else {
+            spinner.stopAnimating()
+            return
+        }
+        dbRef.child("users").observe(.value, with: { [weak self] snapshot in
+            
+            guard let strongSelf = self,
                 let usersDic = snapshot.value as? [String: AnyObject] else {
                     self?.spinner.stopAnimating()
                     return
+            }
+            
+            let friendsUIDs = Array(friendsDic.keys)
+            
+            for friendUid in friendsUIDs {
+                if let user = usersDic[friendUid],
+                    !strongSelf.allFriends.contains{$0.uid == friendUid} {
+                    let name = (user["name"] as? String) ?? ""
+                    let friend = Friend(uid: friendUid, name: name, image: nil)
+                    strongSelf.allFriends.append(friend)
                 }
-                
-                let friendsUIDs = Array(friendsDic.keys)
-                
-                for friendUid in friendsUIDs {
-                    if let user = usersDic[friendUid],
-                        !strongSelf.allFriends.contains{$0.uid == friendUid} {
-                        let name = (user["name"] as? String) ?? ""
-                        let friend = Friend(uid: friendUid, name: name, image: nil)
-                        strongSelf.allFriends.append(friend)
-                    }
-                }
-                
-                for fKey in Array(friendsDic.keys) {
-                    let fDic = friendsDic[fKey] as! [String: AnyObject]
-                    if let lastBitSent = fDic["lastBitSent"] as? [String: AnyObject] {
-                        for f in strongSelf.allFriends {
-                            if f.uid == fKey {
-                                f.lastBitText = lastBitSent["text"] as? String
-                                f.lastBitSentDate = lastBitSent["date"] as? String
-                            }
+            }
+            
+            for fKey in Array(friendsDic.keys) {
+                let fDic = friendsDic[fKey] as! [String: AnyObject]
+                if let lastBitSent = fDic["lastBitSent"] as? [String: AnyObject] {
+                    for f in strongSelf.allFriends {
+                        if f.uid == fKey {
+                            f.lastBitText = lastBitSent["text"] as? String
+                            f.lastBitSentDate = lastBitSent["date"] as? String
                         }
                     }
                 }
-                strongSelf.sortFriends()
-                strongSelf.spinner.stopAnimating()
-            })
+            }
+            strongSelf.sortFriends()
+            strongSelf.spinner.stopAnimating()
         })
-        
     }
     
     func sortFriends() {
@@ -119,6 +135,27 @@ class FriendsViewController: PeopleViewController {
             let indexPath = friendsTableView.indexPathForSelectedRow!
             bitsViewController.friend = friends[indexPath.row]
         }
+    }
+    
+    // MARK: Notifications
+    
+    func receiveBitNotification(notification: Notification) {
+        
+        let aps = notification.userInfo as! [String: Any]
+        if let alert = aps["alert"] as? [String: Any],
+            let title = alert["title"] as? String,
+            let body = alert["body"] as? String {
+            
+            let popup = UIAlertController(title: title, message: body, preferredStyle: .alert)
+            popup.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            present(popup, animated: true, completion: { [weak self] in
+                self?.observeFriends()
+            })
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
