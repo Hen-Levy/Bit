@@ -281,11 +281,14 @@ extension BitsViewController: UITableViewDataSource, UITableViewDelegate {
         }
         // if the bit is in suggestions - save it as a new bit in bits
         if tableView == suggestionsTableView {
-            saveNewBitWithText(bit.text)
+            path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
+            let uid = dbRef.child(path).childByAutoId().key
+            bitDic["uid"] = uid
+            path = path + "/" + uid
         } else {
             path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits/" + bit.uid
-            dbRef.child(path).setValue(bitDic)
         }
+        dbRef.child(path).setValue(bitDic)
         
         // show alert that says that the bit was sent
         let alertController = UIAlertController(title: "Bit was sent!", message: bit.text, preferredStyle: .alert)

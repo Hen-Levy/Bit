@@ -31,19 +31,23 @@ class User {
     }
     private var downloadedImage: UIImage?
     
-    func getProfilePic(completion: @escaping (UIImage?) -> ()) {
-        if downloadedImage != nil {
+    func getProfilePic(userId: String, completion: @escaping (UIImage?) -> ()) {
+        if userId == User.shared.uid && downloadedImage != nil {
             completion(downloadedImage)
             return
         }
         
-        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        FIRDatabase.database().reference().child("users").child(userId).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.hasChild("userPhoto"){
-                let filePath = "\(User.shared.uid)/\("userPhoto")"
+                let filePath = "\(userId)/\("userPhoto")"
                 FIRStorage.storage().reference().child(filePath).data(withMaxSize: 10*1024*1024, completion: { (data, error) in
+                    
                     if let strongData = data {
-                        User.shared.downloadedImage = UIImage(data: strongData)
-                        completion(User.shared.downloadedImage)
+                        let image = UIImage(data: strongData)
+                        if userId == User.shared.uid {
+                            User.shared.downloadedImage = image
+                        }
+                        completion(image)
                     } else {
                         completion(personPlaceholderImage)
                     }

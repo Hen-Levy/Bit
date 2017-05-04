@@ -71,7 +71,7 @@ class Radar: LocationManagerDelegate {
     }
     
     private func observeFriendBits(_ friendUid: String, _ friendName: String) {
-        let path = "users/" + friendUid + "/friends/" + User.shared.uid + "/bits"
+        let path = "users/" + User.shared.uid + "/friends/" + friendUid + "/bits"
         FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { (snapshot) in
             
             guard let bitsDic = snapshot.value as? [String: AnyObject],
@@ -107,14 +107,14 @@ class Radar: LocationManagerDelegate {
     }
     
     private func sendBit(senderName: String, bitDic: [String: Any], bitFriendUID: String) {
-        api.requestSendBit(senderName: senderName, bitText: bitDic["text"] as! String, friendUID: User.shared.uid)
+        api.requestSendBit(senderName: senderName, bitText: bitDic["text"] as! String, friendUID: bitFriendUID)
         
         let df = DateFormatter()
         df.dateFormat = dateFormat
         let dateSentStr = df.string(from: Date())
         
         // update database that the bit was sent
-        var path = "users/" + User.shared.uid + "/friends/" + bitFriendUID + "/lastBitSent"
+        var path = "users/" + bitFriendUID + "/friends/" + User.shared.uid + "/lastBitSent"
         dbRef.child(path).setValue(["date": dateSentStr,
                                     "text": bitDic["text"]!])
         
@@ -126,7 +126,9 @@ class Radar: LocationManagerDelegate {
                       "sent": true,
                       "dateSent": dateSentStr] as [String : Any]
         
-        path = "users/" + bitFriendUID + "/friends/" + User.shared.uid + "/bits/" + (bitDic["uid"] as! String)
+        path = "users/" + User.shared.uid + "/friends/" + bitFriendUID + "/bits/" + (bitDic["uid"] as! String)
+        
+//        path = "users/" + bitFriendUID + "/friends/" + User.shared.uid + "/bits/" + (bitDic["uid"] as! String)
         dbRef.child(path).setValue(bitDic)
     }
     

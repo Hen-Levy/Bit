@@ -12,7 +12,7 @@ import FirebaseDatabase
 
 class BitsLocationsViewController: UIViewController {
     var friend: Friend!
-    var locations = [(bitText: String, coordinate: CLLocationCoordinate2D)]()
+    var bitLocations = [LastBitItem]()
     @IBOutlet weak var mapView: GMSMapView!
     
     override func viewDidLoad() {
@@ -30,15 +30,16 @@ class BitsLocationsViewController: UIViewController {
                 }
                 let friendsUIDs = Array(friendsDic.keys)
                 for friendUid in friendsUIDs {
-                    self.observeFriend(friendUid)
+                    let friendName = (friendsDic[friendUid] as! [String: AnyObject])["name"] as! String
+                    self.observeFriend(friendUid, friendName)
                 }
             })
         } else {
-            observeFriend(friend.uid)
+            observeFriend(friend.uid, friend.name)
         }
     }
     
-    func observeFriend(_ friendUid: String) {
+    func observeFriend(_ friendUid: String, _ friendName: String) {
         let path = "users/" + User.shared.uid + "/friends/" + friendUid + "/bits"
         FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
             
@@ -51,28 +52,43 @@ class BitsLocationsViewController: UIViewController {
             
             for bit in bitsArray {
                 let bitText = (bit["text"] as? String) ?? ""
+                let bitUid = (bit["uid"] as? String) ?? ""
                 
                 if let coordinateDic = bit["location"] as? [String: Double] {
                     let coordinate = CLLocationCoordinate2D(latitude: coordinateDic["lat"]!, longitude: coordinateDic["long"]!)
-                    strongSelf.locations.append((bitText, coordinate))
+                    
+                    let bitLocation = LastBitItem(uid: bitUid, text: bitText, pin: 0, coordinate: coordinate)
+                    
+                    strongSelf.bitLocations.append(bitLocation)
                 }
             }
             
-            guard !strongSelf.locations.isEmpty else {
+            guard !strongSelf.bitLocations.isEmpty else {
                 return
             }
-            let camCoordinate = strongSelf.locations[0].coordinate
+            let camCoordinate = strongSelf.bitLocations[0].coordinate!
             
             let camera = GMSCameraPosition.camera(withLatitude: camCoordinate.latitude,
                                                   longitude: camCoordinate.longitude,
                                                   zoom: 14)
             strongSelf.mapView.camera = camera
             
-            for location in strongSelf.locations {
+            for location in strongSelf.bitLocations {
                 let marker = GMSMarker()
-                marker.position = location.coordinate
-                marker.snippet = location.bitText
+                marker.position = location.coordinate!
+                marker.snippet = friendName + ": " + location.text
                 marker.appearAnimation = .pop
+                DispatchQueue.global(qos: .default).async {
+                    User.shared.getProfilePic(userId: friendUid, completion: { friendPhoto in
+                        DispatchQueue.main.async {
+                            let scaledImage = friendPhoto?.scaleImage(toSize: CGSize(width: 20, height: 20))
+                            let iconView = UIImageView(image: scaledImage)
+                            iconView.layer.masksToBounds = true
+                            iconView.layer.cornerRadius = iconView.frame.size.height/2
+                            marker.iconView = iconView
+                        }
+                    })
+                }
                 marker.map = strongSelf.mapView
             }
         })

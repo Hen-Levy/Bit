@@ -33,7 +33,8 @@ class ProfileViewController: UIViewController {
         
         nameLabel.text = User.shared.name
         emailLabel.text = User.shared.email
-        User.shared.getProfilePic {[weak self] userPhoto in
+        
+        User.shared.getProfilePic(userId: User.shared.uid) { [weak self] userPhoto in
             self?.changeProfilePicButton.setImage(userPhoto, for: .normal)
         }
     }
