@@ -18,6 +18,12 @@ class BitsLocationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadLocations()
+    }
+    
+    func loadLocations() {
+        bitLocations.removeAll()
+        
         if friend == nil {
             navigationController?.navigationBar.height = 44.0
             navigationController?.navigationBar.setupGradient()
@@ -78,17 +84,17 @@ class BitsLocationsViewController: UIViewController {
                 marker.position = location.coordinate!
                 marker.snippet = friendName + ": " + location.text
                 marker.appearAnimation = .pop
-                DispatchQueue.global(qos: .default).async {
-                    User.shared.getProfilePic(userId: friendUid, completion: { friendPhoto in
-                        DispatchQueue.main.async {
-                            let scaledImage = friendPhoto?.scaleImage(toSize: CGSize(width: 20, height: 20))
-                            let iconView = UIImageView(image: scaledImage)
-                            iconView.layer.masksToBounds = true
-                            iconView.layer.cornerRadius = iconView.frame.size.height/2
-                            marker.iconView = iconView
-                        }
-                    })
-                }
+//                DispatchQueue.global(qos: .default).async {
+//                    User.shared.getProfilePic(userId: friendUid, completion: { friendPhoto in
+//                        DispatchQueue.main.async {
+//                            let scaledImage = friendPhoto?.scaleImage(toSize: CGSize(width: 20, height: 20))
+//                            let iconView = UIImageView(image: scaledImage)
+//                            iconView.layer.masksToBounds = true
+//                            iconView.layer.cornerRadius = iconView.frame.size.height/2
+//                            marker.iconView = iconView
+//                        }
+//                    })
+//                }
                 marker.map = strongSelf.mapView
             }
         })
@@ -99,6 +105,7 @@ class BitsLocationsViewController: UIViewController {
         if friend != nil {
             UIApplication.shared.isStatusBarHidden = true
         }
+        loadLocations()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

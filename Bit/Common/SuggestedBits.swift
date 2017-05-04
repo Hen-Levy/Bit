@@ -13,7 +13,10 @@ class SuggestedBits {
     
     class func `for`(userUID: String, friendUID: String, completion: @escaping ([String]) -> ()) {
         
-        let filePath = "conversations/SampleConversation.json"
+//        let filePath = "conversations/SampleConversation.json"
+        
+        let jsonName = userUID + " " + friendUID
+        let filePath = "conversations/\(jsonName).json"
         
         // get conversation between user & friend
         FIRStorage.storage().reference().child(filePath).data(withMaxSize: 10*1024*1024) { (data, error) in
