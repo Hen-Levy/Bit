@@ -13,9 +13,7 @@ class SuggestedBits {
     
     class func `for`(userUID: String, friendUID: String, completion: @escaping ([String]) -> ()) {
         
-//        let filePath = "conversations/SampleConversation.json"
-        
-        let jsonName = userUID + " " + friendUID
+        let jsonName = userUID + "$" + friendUID
         let filePath = "conversations/\(jsonName).json"
         
         // get conversation between user & friend
@@ -29,8 +27,8 @@ class SuggestedBits {
                     
                     // to dictionary
                     guard let strongJsonDic = jsonDic,
-//                    let titles = strongJsonDic[userUID] as? [String] else {
-                    let titles = strongJsonDic["A"] as? [String] else {
+                    let titles = strongJsonDic[userUID] as? [String] else {
+//                    let titles = strongJsonDic["A"] as? [String] else {
                         return
                     }
                     debugPrint("conversation: \(strongJsonDic)")
