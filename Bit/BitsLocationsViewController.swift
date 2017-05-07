@@ -30,30 +30,39 @@ class BitsLocationsViewController: UIViewController {
             self.title = "Locations"
             
             let path = "users/" + User.shared.uid + "/friends"
-            FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { (snapshot) in
+            FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: {[weak self] (snapshot) in
                 guard let friendsDic = snapshot.value as? [String: AnyObject]  else {
                     return
                 }
                 let friendsUIDs = Array(friendsDic.keys)
                 for friendUid in friendsUIDs {
-                    let friendName = (friendsDic[friendUid] as! [String: AnyObject])["name"] as! String
-                    self.observeFriend(friendUid, friendName)
+
+                    guard let friend = friendsDic[friendUid] as? [String: AnyObject],
+                        let bitsDic = friend["bits"] as? [String: AnyObject],
+                        let friendName = friend["name"] as? String else {
+                            continue
+                    }
+                    
+                    self?.observeFriend(bitsDic: bitsDic, friendUid: friendUid, friendName: friendName)
+                    self?.loadBitsLocations()
                 }
             })
         } else {
-            observeFriend(friend.uid, friend.name)
+            let path = "users/" + User.shared.uid + "/friends/" + friend.uid + "/bits"
+            FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+                
+                guard let bitsDic = snapshot.value as? [String: AnyObject],
+                    let strongSelf = self else {
+                        return
+                }
+                
+                strongSelf.observeFriend(bitsDic: bitsDic, friendUid: strongSelf.friend.uid, friendName: strongSelf.friend.name)
+                strongSelf.loadBitsLocations()
+            })
         }
     }
     
-    func observeFriend(_ friendUid: String, _ friendName: String) {
-        let path = "users/" + User.shared.uid + "/friends/" + friendUid + "/bits"
-        FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-            
-            guard let bitsDic = snapshot.value as? [String: AnyObject],
-                let strongSelf = self else {
-                    return
-            }
-            
+    func observeFriend(bitsDic: [String: AnyObject], friendUid: String, friendName: String) {
             let bitsArray = Array(bitsDic.values)
             
             for bit in bitsArray {
@@ -64,40 +73,45 @@ class BitsLocationsViewController: UIViewController {
                     let coordinate = CLLocationCoordinate2D(latitude: coordinateDic["lat"]!, longitude: coordinateDic["long"]!)
                     
                     let bitLocation = LastBitItem(uid: bitUid, text: bitText, pin: 0, coordinate: coordinate)
+                    bitLocation.sentTo = friendName
+                    bitLocation.sentToUid = friendUid
                     
-                    strongSelf.bitLocations.append(bitLocation)
+                    bitLocations.append(bitLocation)
                 }
             }
-            
-            guard !strongSelf.bitLocations.isEmpty else {
-                return
+    }
+    
+    func loadBitsLocations() {
+        guard !bitLocations.isEmpty else {
+            return
+        }
+        let camCoordinate = bitLocations[0].coordinate!
+        
+        let camera = GMSCameraPosition.camera(withLatitude: camCoordinate.latitude,
+                                              longitude: camCoordinate.longitude,
+                                              zoom: 12)
+        mapView.camera = camera
+        
+        for (index, location) in bitLocations.enumerated() {
+            let marker = GMSMarker()
+            marker.position = location.coordinate!
+            marker.snippet = location.sentTo + ": " + location.text
+            marker.appearAnimation = .pop
+            marker.isTappable = true
+            marker.zIndex = Int32(index)
+            DispatchQueue.global(qos: .default).async {
+                User.shared.getProfilePic(userId: location.sentToUid, completion: { friendPhoto in
+                    DispatchQueue.main.async {
+                        let scaledImage = friendPhoto?.scaleImage(toSize: CGSize(width: 20, height: 20))
+                        let iconView = UIImageView(image: scaledImage)
+                        iconView.layer.masksToBounds = true
+                        iconView.layer.cornerRadius = iconView.frame.size.height/2
+                        marker.iconView = iconView
+                    }
+                })
             }
-            let camCoordinate = strongSelf.bitLocations[0].coordinate!
-            
-            let camera = GMSCameraPosition.camera(withLatitude: camCoordinate.latitude,
-                                                  longitude: camCoordinate.longitude,
-                                                  zoom: 14)
-            strongSelf.mapView.camera = camera
-            
-            for location in strongSelf.bitLocations {
-                let marker = GMSMarker()
-                marker.position = location.coordinate!
-                marker.snippet = friendName + ": " + location.text
-                marker.appearAnimation = .pop
-//                DispatchQueue.global(qos: .default).async {
-//                    User.shared.getProfilePic(userId: friendUid, completion: { friendPhoto in
-//                        DispatchQueue.main.async {
-//                            let scaledImage = friendPhoto?.scaleImage(toSize: CGSize(width: 20, height: 20))
-//                            let iconView = UIImageView(image: scaledImage)
-//                            iconView.layer.masksToBounds = true
-//                            iconView.layer.cornerRadius = iconView.frame.size.height/2
-//                            marker.iconView = iconView
-//                        }
-//                    })
-//                }
-                marker.map = strongSelf.mapView
-            }
-        })
+            marker.map = mapView
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -59,9 +59,14 @@ class Radar: LocationManagerDelegate {
 
                 let friendsUIDs = Array(friendsDic.keys)
                 for friendUid in friendsUIDs {
-                    
-                    let friendName = (friendsDic[friendUid] as! [String: AnyObject])["name"] as! String
-                    self.observeFriendBits(friendUid, friendName)
+//                    
+//                    let friendName = (friendsDic[friendUid] as! [String: AnyObject])["name"] as! String
+                    guard let friend = friendsDic[friendUid] as? [String: AnyObject],
+                        let bitsDic = friend["bits"] as? [String: AnyObject],
+                        let friendName = friend["name"] as? String else {
+                            return
+                    }
+                    self.observeFriendBits(bitsDic: bitsDic, friendUid: friendUid, friendName: friendName)
                 }
         })
         
@@ -70,22 +75,21 @@ class Radar: LocationManagerDelegate {
         }
     }
     
-    private func observeFriendBits(_ friendUid: String, _ friendName: String) {
-        let path = "users/" + User.shared.uid + "/friends/" + friendUid + "/bits"
-        FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            guard let bitsDic = snapshot.value as? [String: AnyObject],
-            let myCurrentCoordinate = self.myCurrentLocation?.coordinate else {
+    private func observeFriendBits(bitsDic: [String: AnyObject], friendUid: String, friendName: String) {
+//        let path = "users/" + User.shared.uid + "/friends/" + friendUid + "/bits"
+//        FIRDatabase.database().reference().child(path).observeSingleEvent(of: .value, with: { (snapshot) in
+        
+            guard let myCurrentCoordinate = myCurrentLocation?.coordinate else {
                 return
             }
-            
+        
             let bitsArray = Array(bitsDic.values)
             
             for bit in bitsArray {
                 if let coordinateDic = bit["location"] as? [String: Double] {
                     let coordinate = CLLocationCoordinate2D(latitude: coordinateDic["lat"]!, longitude: coordinateDic["long"]!)
                     
-                    let distanceFromMyCurrentLocation = self.distance(lat1: coordinate.latitude, lon1: coordinate.longitude, lat2: myCurrentCoordinate.latitude, lon2: myCurrentCoordinate.longitude, unit: "K")
+                    let distanceFromMyCurrentLocation = distance(lat1: coordinate.latitude, lon1: coordinate.longitude, lat2: myCurrentCoordinate.latitude, lon2: myCurrentCoordinate.longitude, unit: "K")
                     
                     // if bit's distance is under X km
                     // and bit didn't sent - send it
@@ -94,7 +98,7 @@ class Radar: LocationManagerDelegate {
                     let bitDic = bit as? [String: Any],
                         bitDic["sent"] == nil || (bitDic["sent"] as? Bool) == false {
                         
-                        self.sendBit(senderName: friendName,
+                        sendBit(senderName: friendName,
                                      bitDic: bitDic,
                                      bitFriendUID: friendUid)
                         
@@ -103,7 +107,6 @@ class Radar: LocationManagerDelegate {
                     }
                 }
             }
-        })
     }
     
     private func sendBit(senderName: String, bitDic: [String: Any], bitFriendUID: String) {
@@ -127,8 +130,6 @@ class Radar: LocationManagerDelegate {
                       "dateSent": dateSentStr] as [String : Any]
         
         path = "users/" + User.shared.uid + "/friends/" + bitFriendUID + "/bits/" + (bitDic["uid"] as! String)
-        
-//        path = "users/" + bitFriendUID + "/friends/" + User.shared.uid + "/bits/" + (bitDic["uid"] as! String)
         dbRef.child(path).setValue(bitDic)
     }
     

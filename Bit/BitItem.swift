@@ -27,4 +27,5 @@ class BitItem {
 
 class LastBitItem: BitItem {
     var sentTo = ""
+    var sentToUid = ""
 }
