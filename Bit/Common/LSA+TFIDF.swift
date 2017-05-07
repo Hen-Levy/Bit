@@ -10,7 +10,7 @@ import Foundation
 
 class LSA_TFIDF {
     let stopTerms = [" the "," so "," to "," well "," but "," at "," too "]
-    let ignoreChars = CharacterSet(charactersIn: ":!?.,")
+    let ignoreChars = CharacterSet(charactersIn: "!?.,")
     
     private var titles = [String]()
     private var termsInDocument = [String]()
@@ -46,7 +46,13 @@ class LSA_TFIDF {
                     newTitle = newTitle.replacingOccurrences(of: stopTerm, with: " $remove$ ")
                 }
             }
-            let termsInNewTitle = newTitle.components(separatedBy: "$remove$ ")
+            var termsInNewTitle = newTitle.components(separatedBy: "$remove$ ")
+            for (index, term) in termsInNewTitle.enumerated() {
+                if term.trimmingCharacters(in: .whitespaces).isEmpty {
+                    termsInNewTitle.remove(at: index)
+                }
+            }
+            
             termsInDocument += termsInNewTitle
         }
         
