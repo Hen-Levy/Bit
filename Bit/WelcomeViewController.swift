@@ -18,12 +18,18 @@ class WelcomeViewController: FormViewController {
     @IBAction func login() {
         
         dismissKeyboard()
-        
-        // validate email + password
+
+        // validate email
         guard let email = emailTextField.text,
-            let pass = passwordTextField.text,
-            Validate.email(email: email),
+            Validate.email(email: email) else {
+                showErrorMessage(title: "Email is invalid")
+                return
+        }
+        
+        // validate password
+        guard let pass = passwordTextField.text,
             Validate.defaultText(text: pass) else {
+                showErrorMessage(title: "Password is invalid")
                 return
         }
         
@@ -31,7 +37,7 @@ class WelcomeViewController: FormViewController {
         FIRAuth.auth()?.signIn(withEmail: email, password: pass, completion: {(user,error)
             in
             if let strongError = error {
-                debugPrint(strongError.localizedDescription)
+                self.showErrorMessage(title: strongError.localizedDescription)
             } else {
                 if User.shared.registrationToken != nil {
                     User.shared.saveRegistrationToken()
@@ -39,6 +45,12 @@ class WelcomeViewController: FormViewController {
                 self.performSegue(withIdentifier: "SegueToFriends", sender: nil)
             }
         })
+    }
+    
+    func showErrorMessage(title: String) {
+        let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
     
     
